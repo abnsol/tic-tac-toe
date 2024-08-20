@@ -8,7 +8,6 @@ function gameBoard(){
     }
 
     const changeBoard = function(r,c,letter){
-        if (board[r][c] == 'x' || board[r][c] == 'o') return 'please enter correct input';
 
         board[r][c] = letter;
         displayBoard();
@@ -85,26 +84,22 @@ function gameLogic(playerOne,playerTwo){
         return visited.some(coords => arraysEqual(coords, [row, col]));
     }
 
-    do{
-        let r = Number(prompt("row:"));
-        let c = Number(prompt("col:"));
     
-        while (!inbound(r,c) || hasVisited(r,c)){
-            r = Number(prompt("row:"));
-            c = Number(prompt("col:"));
-        }
+    if (hasVisited(r,c)){
+        return;
+    }
         
-        visited.push([r,c]);
-        if (turn === 0){
-            tic.changeBoard(r,c,player1.getLetter());
-        }else{
-            tic.changeBoard(r,c,player2.getLetter());
-        }
+    visited.push([r,c]);
+    if (turn === 0){
+        tic.changeBoard(r,c,player1.getLetter());
+    }else{
+        tic.changeBoard(r,c,player2.getLetter());
+    }
 
-        turn = 1 - turn;
-        tie--;
-        gameOver = tic.gameOver();
-    }while(!gameOver && tie > 0);
+    turn = 1 - turn;
+    tie--;
+    gameOver = tic.gameOver();
+    
 
     if (gameOver){
         return `player ${2 - turn}`;
