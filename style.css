@@ -1,0 +1,190 @@
+*, *::before, *::after {
+    box-sizing: border-box; /*1. Use a more-intuitive box-sizing model.*/
+}
+
+* {
+    margin: 0; /* 2. Remove default margin */
+}
+
+body {
+    line-height: 1.5; /* Typographic tweaks! 3. Add accessible line-height  4. Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: black;
+    font-family: "Bungee Tint";
+}
+
+img, picture, video, canvas, svg { /* 5. Improve media defaults */
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select { /* 6. Remove built-in form typography styles */
+    font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 { /*7. Avoid text overflows */
+    overflow-wrap: break-word;
+}
+
+#root, #__next { /* 8. Create a root stacking context */
+    isolation: isolate;
+}
+
+/* div{
+    
+    border: 2px solid red;
+
+} */
+
+#header,#footer{
+    height:70px;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+#header{
+    padding: 10px;
+}
+
+#footer{
+    justify-items: flex-end;
+    padding-right: 20px;
+    img{
+        width: 50px;
+        height: 50px;
+        background-color: white;
+        border-radius:50%;
+    }
+
+    img:hover{
+        cursor: pointer;
+    }
+    object-fit: cover;
+}
+
+
+#main{
+    flex: 1;
+    display: grid;
+    grid-template: 4fr 1fr/1fr 2fr 1fr;
+    justify-items: center;
+    align-items: center;
+
+    #playerOne,#playerTwo{
+        display: grid;
+        grid-template-rows:1fr 2fr 1fr;
+        height: 200px;
+        width: 200px;
+        background-color: #1b2845;
+        border-radius: 20px;
+
+        div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            div{
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                background-color:whitesmoke ;
+            }
+        }
+    }
+
+    #playerOne{
+        justify-self: right;
+    }
+    #playerTwo{
+        justify-self: left;
+    }
+
+    #playAgain{
+        grid-column: 1/4;
+
+        button{
+            width: 200px;
+            height: 40px;
+            border-radius: 20px;
+            border: none;
+            background-color: whitesmoke;
+            outline: none;
+        }
+
+        button:hover{
+            cursor: pointer;
+            opacity: 0.7;
+        }
+    }
+
+    #board{
+        display: grid;
+        grid-template-rows: 100px 100px 100px;
+        justify-items: center;
+        align-items: center;
+        background-color: whitesmoke;
+
+        .row{
+            display: grid;
+            grid-template-columns: 100px 100px 100px;
+            border: 2px solid #1b2845;
+
+            .col{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100px;
+                border: 2px solid #1b2845;
+            }
+        }
+    }
+
+    #modal{
+        position: fixed;
+        top: 30%;
+        left: 30%;
+        flex-direction: column;
+        max-width:40ch;
+        border: none;
+        border-radius: 20px;
+
+        form{
+            display: flex;
+            flex-direction: column;
+            gap:10px;
+
+            div{
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            button{
+                justify-self: center;
+            }
+
+            input{
+                font-size: 20px;
+                font-family:roboto;
+                padding-left: 10px;
+                border-radius: 10px;
+                border: 1px solid black;
+            }
+
+            input:focus,select:focus{
+                outline: none;
+            } 
+        }
+    }
+
+    #modal::backdrop{
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(2px);
+    }
+}
