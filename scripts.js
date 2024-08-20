@@ -68,18 +68,14 @@ function player(name,letter){
     return {getName,getLetter,getScore,addScore};
 }
 
-function gameLogic(){
+function gameLogic(playerOne,playerTwo){
     const tic = gameBoard();
-    const player1 = player('Ebenezer','x');
-    const player2 = player('Solomon','o');
+    const player1 = playerOne;
+    const player2 = playerTwo;
     let turn = 0;          // player turn starts from player 1
     let gameOver = false; // gameOver state
     let tie = 9;         // tie ends at 9 moves
     const visited = []; // don't repeat a point
-
-    function inbound(r,c){ 
-        return ((0 <= r && r < 3) && (0 <= c && c < 3));
-    } 
 
     function arraysEqual(arr1, arr2) {
         return arr1.every((val, index) => val === arr2[index]);
@@ -117,3 +113,42 @@ function gameLogic(){
     }
 }
 
+const play = (function(){
+    const modal = document.querySelector('#modal');
+    const form = document.querySelector('#form');
+    const player1name = document.querySelector('#playerOne .name');
+    const player2name = document.querySelector('#playerTwo .name');
+
+    function addGlobalEventListeners(type, selector, callback) {
+        document.addEventListener(type, e => {
+            if (e.target.matches(selector)) callback(e);
+        });
+    }
+
+    function displayName(target,name){
+        target.textContent = name;
+    }
+
+    addGlobalEventListeners('click','button',(e) => {
+        modal.showModal();
+        const formData = new FormData(form);
+        const playerOne = formData.get('playerOne');
+        const letterOne = formData.get('player1letter');
+        const playerTwo = formData.get('playerTwo');
+        const letterTwo = formData.get('player2letter');
+
+        const player1 = player(playerOne,letterOne);
+        const player2 = player(playerTwo,letterTwo);
+        displayName(player1name,playerOne);
+        displayName(player2name,playerTwo);
+
+        // gameLogic(player1,player2);       
+    });
+
+    addGlobalEventListeners('click','.col',(e) => {
+        const parent = Number(e.target.parentElement.id);
+        const child = Number(e.target.id);
+        console.log(parent + " " + child);
+    });
+
+})();
