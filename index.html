@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <script src = "scripts.js" defer></script>
+    <link rel="icon" href="images/tic-tac-toe.png">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +16,8 @@
     <div id="main">
         <div id="playerOne">
             <div class="name">Player-One</div>
-            <div class="profile"><div>pp</div></div>
-            <div class="score">Score: 0</div>
+            <div class="profile"><div><img src="images/black-acc.png" alt="playerOne profile"></div></div>
+            <div class="score"></div>
         </div>
         <div id="play">
             <div id="board">
@@ -39,11 +40,11 @@
         </div>
         <div id="playerTwo">
                 <div class="name">player-Two</div>
-                <div class="profile"><div>pp</div></div>
-                <div class="score">Score: 0</div>   
+                <div class="profile"><div><img src="images/black-acc.png" alt="player Two profile"></div></div>
+                <div class="score"></div>   
         </div>
         <div id="playAgain">
-            <button>Play</button>
+            <button id="play">Play</button>
         </div>
         <dialog id="modal">
             <form method="dialog" id="form">
@@ -73,6 +74,12 @@
                   <button>Start Game</button>
                 </div>
             </form>
+        </dialog>
+        <dialog id="gameOver">
+                <div id="winnerName"></div>
+                <div>
+                    <button id="play">Play Again</button>
+                </div>
         </dialog>
     </div>
     <div id="footer">
