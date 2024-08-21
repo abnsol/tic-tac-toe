@@ -1,16 +1,36 @@
+function addGlobalEventListeners(type, selector, callback) {
+    document.addEventListener(type, e => {
+        if (e.target.matches(selector)) callback(e);
+    });
+}
+
+function displayName(target,name){
+    target.textContent = name;
+}
+
 function gameBoard(){
     let board = [['-','-','-'],['-','-','-'],['-','-','-']]; 
 
-    const displayBoard = function(){
-        for(let i = 0;i < 3;i++){
-            console.log(board[i]);
-        }
+    const displayBoard = function(r,c,letter){
+        const rowAll = document.querySelectorAll(`.row`);
+        const row = rowAll[r];
+        const col = row.children[c];
+        col.textContent = letter;
     }
 
     const changeBoard = function(r,c,letter){
-
         board[r][c] = letter;
-        displayBoard();
+        displayBoard(r,c,letter);
+        
+    }
+
+    const clearBoard = function(){
+        board = [['-','-','-'],['-','-','-'],['-','-','-']];
+        for (let i = 0;i < 3;i++){
+            for (let j = 0;j < 3;j++){
+                displayBoard(i,j,'-');
+            }
+        }
     }
 
     const equalArr = function(arr1,arr2){
@@ -50,7 +70,7 @@ function gameBoard(){
         return false;
     };
 
-    return {displayBoard,changeBoard,gameOver};
+    return {displayBoard,changeBoard,clearBoard,gameOver};
 }
 
 
@@ -68,13 +88,17 @@ function player(name,letter){
 }
 
 function gameLogic(playerOne,playerTwo){
+    const gameOverModal = document.querySelector('#gameOver');
+    const winnerName = gameOverModal.firstElementChild;
     const tic = gameBoard();
+    tic.clearBoard();
     const player1 = playerOne;
     const player2 = playerTwo;
     let turn = 0;          // player turn starts from player 1
-    let gameOver = false; // gameOver state
-    let tie = 9;         // tie ends at 9 moves
-    const visited = []; // don't repeat a point
+    let gameOver = false;  // gameOver state
+    let tie = 9;           // tie ends at 9 moves
+    let visited = [];   // don't repeat a point
+
 
     function arraysEqual(arr1, arr2) {
         return arr1.every((val, index) => val === arr2[index]);
@@ -84,28 +108,57 @@ function gameLogic(playerOne,playerTwo){
         return visited.some(coords => arraysEqual(coords, [row, col]));
     }
 
-    
-    if (hasVisited(r,c)){
-        return;
-    }
+    addGlobalEventListeners('click','.col',(e) => {
+        const row = Number(e.target.parentElement.id);
+        const col = Number(e.target.id);
+
+        if (hasVisited(row,col)){
+            return;
+        }
+            
+        visited.push([row,col]);
+
+        if (turn === 0){
+            tic.changeBoard(row,col,player1.getLetter());
+        }else if(turn === 1){
+            tic.changeBoard(row,col,player2.getLetter());
+        }
         
-    visited.push([r,c]);
-    if (turn === 0){
-        tic.changeBoard(r,c,player1.getLetter());
-    }else{
-        tic.changeBoard(r,c,player2.getLetter());
-    }
+        turn = 1 - turn;
+        tie--;
+        gameOver = tic.gameOver();
 
-    turn = 1 - turn;
-    tie--;
-    gameOver = tic.gameOver();
-    
+        if (gameOver){
+            tie = 9;
+            gameOver = false;
+            visited = [];
+            let winner = undefined;
+            if (1 - turn === 0){
+                winner = player1.getName();
+            }else{
+                winner = player2.getName();
+            }
 
-    if (gameOver){
-        return `player ${2 - turn}`;
-    }else{
-        return 'tie';   
-    }
+            winnerName.textContent = winner + ' Wins!';
+            gameOverModal.showModal();
+            
+            addGlobalEventListeners('click','#gameOver button',(e) => {
+                tic.clearBoard();
+                gameOverModal.close();
+            });
+
+        }else if(tie == 0){
+            winnerName.textContent = "Tie!" 
+            gameOverModal.showModal();
+            tie = 9;
+            visited = []
+            addGlobalEventListeners('click','#gameOver button',(e) => {
+                tic.clearBoard();
+                gameOverModal.close();
+                
+            });
+        }
+    });
 }
 
 const play = (function(){
@@ -113,37 +166,21 @@ const play = (function(){
     const form = document.querySelector('#form');
     const player1name = document.querySelector('#playerOne .name');
     const player2name = document.querySelector('#playerTwo .name');
-
-    function addGlobalEventListeners(type, selector, callback) {
-        document.addEventListener(type, e => {
-            if (e.target.matches(selector)) callback(e);
-        });
-    }
-
-    function displayName(target,name){
-        target.textContent = name;
-    }
-
-    addGlobalEventListeners('click','button',(e) => {
+    
+    addGlobalEventListeners('click','#play',(e) => {
         modal.showModal();
-        const formData = new FormData(form);
-        const playerOne = formData.get('playerOne');
-        const letterOne = formData.get('player1letter');
-        const playerTwo = formData.get('playerTwo');
-        const letterTwo = formData.get('player2letter');
-
-        const player1 = player(playerOne,letterOne);
-        const player2 = player(playerTwo,letterTwo);
-        displayName(player1name,playerOne);
-        displayName(player2name,playerTwo);
-
-        // gameLogic(player1,player2);       
+        addGlobalEventListeners('click','form button',(e) =>{
+            const formData = new FormData(form);
+            const playerOne = formData.get('playerOne');
+            const letterOne = formData.get('player1letter');
+            const playerTwo = formData.get('playerTwo');
+            const letterTwo = formData.get('player2letter');
+    
+            const player1 = player(playerOne,letterOne);
+            const player2 = player(playerTwo,letterTwo);
+            displayName(player1name,playerOne);
+            displayName(player2name,playerTwo);
+            gameLogic(player1,player2); 
+        })
     });
-
-    addGlobalEventListeners('click','.col',(e) => {
-        const parent = Number(e.target.parentElement.id);
-        const child = Number(e.target.id);
-        console.log(parent + " " + child);
-    });
-
 })();
